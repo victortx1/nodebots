@@ -1,0 +1,62 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function logado() { return request.auth != null; }
+    function admin() {
+      return logado()
+        && request.auth.token.email != null
+        && exists(/databases/$(database)/documents/admins/$(request.auth.token.email))
+        && get(/databases/$(database)/documents/admins/$(request.auth.token.email)).data.ativo == true;
+    }
+    function termosAceitos() {
+      return logado()
+        && exists(/databases/$(database)/documents/usuarios/$(request.auth.uid))
+        && get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data.termosAceitos == true
+        && get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data.termosVersao == '2026-09-07-v1';
+    }
+
+    match /admins/{email} {
+      allow read: if admin() || (logado() && request.auth.token.email == email);
+      allow write: if false;
+    }
+
+    match /usuarios/{userId} {
+      allow read, create, update: if logado() && request.auth.uid == userId;
+      allow delete: if false;
+    }
+
+    match /conversas/{conversaId} {
+      allow create: if termosAceitos()
+        && request.resource.data.usuarioId == request.auth.uid
+        && request.resource.data.usuarioEmail == request.auth.token.email
+        && request.resource.data.botNome is string;
+
+      allow read: if admin() || (termosAceitos() && resource.data.usuarioId == request.auth.uid);
+
+      allow update: if admin() || (termosAceitos()
+        && resource.data.usuarioId == request.auth.uid
+        && request.resource.data.usuarioId == resource.data.usuarioId
+        && request.resource.data.usuarioEmail == resource.data.usuarioEmail);
+
+      allow delete: if false;
+
+      match /mensagens/{mensagemId} {
+        allow read: if admin() || (termosAceitos()
+          && get(/databases/$(database)/documents/conversas/$(conversaId)).data.usuarioId == request.auth.uid);
+
+        allow create: if admin() || (termosAceitos()
+          && get(/databases/$(database)/documents/conversas/$(conversaId)).data.usuarioId == request.auth.uid
+          && request.resource.data.autorId == request.auth.uid);
+
+        allow update, delete: if false;
+      }
+    }
+
+    match /notificacoes_admin/{notificacaoId} {
+      allow create: if termosAceitos()
+        && request.resource.data.clienteId == request.auth.uid
+        && request.resource.data.clienteEmail == request.auth.token.email;
+      allow read, update, delete: if admin();
+    }
+  }
+}

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chat privado — NodeBots</title>
+<link rel="icon" type="image/png" href="fotos/favicon.png">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="auth.css">
+<link rel="stylesheet" href="termos-gate.css">
+<link rel="stylesheet" href="chat.css">
+</head>
+<body>
+<canvas id="bg-canvas"></canvas>
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <a href="index.html"><span class="brand">Node<span class="brand-accent">Bots</span></span></a>
+    <nav class="nav">
+      <a href="index.html">Início</a>
+      <a href="perfil.html">Meu perfil</a>
+      <button class="nav-chat-btn" id="btn-sair-chat">Sair</button>
+    </nav>
+  </div>
+</header>
+
+<main class="chat-page wrap">
+  <section class="chat-shell">
+    <aside class="chat-sidebar">
+      <div class="chat-sidebar-head">
+        <div>
+          <small>ATENDIMENTO</small>
+          <h2>Conversas</h2>
+        </div>
+        <span id="status-admin" class="admin-badge" style="display:none;">ADMIN</span>
+      </div>
+      <div id="lista-conversas" class="conversation-list">
+        <div class="chat-empty">Carregando conversas…</div>
+      </div>
+    </aside>
+
+    <section class="chat-main">
+      <div class="chat-head">
+        <div>
+          <small id="chat-tipo">ATENDIMENTO PRIVADO</small>
+          <h1 id="chat-titulo">Escolha um bot para começar</h1>
+        </div>
+        <span id="chat-status" class="chat-status">Online</span>
+      </div>
+
+      <div id="mensagens" class="messages">
+        <div class="chat-empty">Aguarde…</div>
+      </div>
+
+      <form id="form-mensagem" class="message-form">
+        <input id="input-mensagem" type="text" autocomplete="off" maxlength="2000" placeholder="Digite sua mensagem…" required>
+        <button class="btn btn-primary" type="submit">Enviar</button>
+      </form>
+    </section>
+  </section>
+</main>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="auth.js"></script>
+<script src="script.js"></script>
+<script src="termos-consentimento.js"></script>
+<script src="chat.js"></script>
+</body>
+</html>

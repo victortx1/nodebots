@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NodeBots</title>
+  <link rel="icon" type="image/png" href="fotos/favicon.png">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="auth.css">
+  <link rel="stylesheet" href="termos-gate.css">
+
+<style id="nodebots-intro-style">
+  /* ================================
+     NODEBOTS - TELA DE ENTRADA
+     ================================ */
+  #site-intro {
+    position: fixed;
+    inset: 0;
+    z-index: 999999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at center, rgba(255, 106, 0, 0.07), transparent 38%),
+      #000;
+    opacity: 1;
+    visibility: visible;
+    transition: opacity .75s ease, visibility .75s ease;
+  }
+
+  #site-intro.intro-hide {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  #site-intro .intro-content {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #site-intro .intro-brand {
+    position: absolute;
+    top: 10%;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: clamp(28px, 4vw, 48px);
+    font-weight: 900;
+    letter-spacing: -1px;
+    color: #fff;
+    opacity: 0;
+    transform: translateY(-18px);
+    animation: intro-brand-in .8s .15s ease forwards;
+  }
+
+  #site-intro .intro-brand span {
+    color: #00ccff;
+  }
+
+  #site-intro .intro-text {
+    position: absolute;
+    bottom: 12%;
+    color: rgba(255,255,255,.72);
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    opacity: 0;
+    animation: intro-text-in .6s .6s ease forwards;
+  }
+
+  #site-intro .intro-loading {
+    position: absolute;
+    bottom: 8%;
+    display: flex;
+    gap: 6px;
+  }
+
+  #site-intro .intro-loading span {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #00f7ff;
+    animation: intro-dot 1s infinite ease-in-out;
+  }
+
+  #site-intro .intro-loading span:nth-child(2) { animation-delay: .15s; }
+  #site-intro .intro-loading span:nth-child(3) { animation-delay: .3s; }
+
+  #site-intro .macbook {
+    width: 150px;
+    height: 96px;
+    position: relative;
+    left: auto;
+    top: auto;
+    margin: 0;
+    perspective: 500px;
+    transform: scale(2.15);
+  }
+
+  #site-intro .shadow {
+    position: absolute;
+    width: 60px;
+    height: 0;
+    left: 40px;
+    top: 160px;
+    transform: rotateX(80deg) rotateY(0deg) rotateZ(0deg);
+    box-shadow: 0 0 60px 40px rgba(0,0,0,.3);
+    animation: intro-shadow 7s ease;
+  }
+
+  #site-intro .inner {
+    z-index: 20;
+    position: absolute;
+    width: 150px;
+    height: 96px;
+    left: 0;
+    top: 0;
+    transform-style: preserve-3d;
+    transform: rotateX(-20deg) rotateY(0deg) rotateZ(0deg);
+    animation: intro-rotate 7s ease;
+  }
+
+  #site-intro .screen {
+    width: 150px;
+    height: 96px;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    border-radius: 7px;
+    background: #ddd;
+    transform-style: preserve-3d;
+    transform-origin: 50% 93px;
+    animation: intro-lid-screen 7s ease;
+    background-image: linear-gradient(45deg, rgba(0,0,0,.34), rgba(0,0,0,0));
+    box-shadow: inset 0 3px 7px rgba(255,255,255,.5);
+  }
+
+  #site-intro .screen .face-one {
+    width: 150px;
+    height: 96px;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    border-radius: 7px;
+    background: #d3d3d3;
+    transform: translateZ(2px);
+    background-image: linear-gradient(45deg, rgba(0,0,0,.24), rgba(0,0,0,0));
+  }
+
+  #site-intro .camera {
+    width: 3px;
+    height: 3px;
+    border-radius: 100%;
+    background: #000;
+    position: absolute;
+    left: 50%;
+    top: 4px;
+    margin-left: -1.5px;
+  }
+
+  #site-intro .display {
+    width: 130px;
+    height: 74px;
+    margin: 10px;
+    background: #000;
+    border-radius: 1px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: inset 0 0 2px #000;
+  }
+
+  #site-intro .display:after {
+    content: "NODE";
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #00e1ff;
+    font: 900 15px Arial, sans-serif;
+    letter-spacing: 2px;
+    text-shadow: 0 0 12px rgba(0, 217, 255, 0.55);
+  }
+
+  #site-intro .shade {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(-135deg, transparent 0%, rgba(255,255,255,.1) 47%, transparent 48%);
+    animation: intro-screen-shade 7s ease;
+    background-size: 300px 200px;
+  }
+
+  #site-intro .screen .face-one span {
+    position: absolute;
+    top: 85px;
+    left: 57px;
+    font-size: 6px;
+    color: #666;
+  }
+
+  #site-intro .macbody {
+    width: 150px;
+    height: 96px;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    border-radius: 7px;
+    background: #cbcbcb;
+    transform-style: preserve-3d;
+    transform-origin: 50% bottom;
+    transform: rotateX(-90deg);
+    animation: intro-lid-macbody 7s ease;
+    background-image: linear-gradient(45deg, rgba(0,0,0,.24), rgba(0,0,0,0));
+  }
+
+  #site-intro .macbody .face-one {
+    width: 150px;
+    height: 96px;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    border-radius: 7px;
+    transform-style: preserve-3d;
+    background: #dfdfdf;
+    animation: intro-keyboard-area 7s ease;
+    transform: translateZ(-2px);
+    background-image: linear-gradient(30deg, rgba(0,0,0,.24), rgba(0,0,0,0));
+  }
+
+  #site-intro .touchpad {
+    width: 40px;
+    height: 31px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    border-radius: 4px;
+    margin: -44px 0 0 -18px;
+    background: #cdcdcd;
+    background-image: linear-gradient(30deg, rgba(0,0,0,.24), rgba(0,0,0,0));
+    box-shadow: inset 0 0 3px #888;
+  }
+
+  #site-intro .keyboard {
+    width: 130px;
+    height: 45px;
+    position: absolute;
+    left: 7px;
+    top: 41px;
+    border-radius: 4px;
+    transform-style: preserve-3d;
+    background: #cdcdcd;
+    box-shadow: inset 0 0 3px #777;
+    padding-left: 2px;
+  }
+
+  #site-intro .keyboard .key {
+    width: 6px;
+    height: 6px;
+    background: #444;
+    float: left;
+    margin: 1px;
+    transform: translateZ(-2px);
+    border-radius: 2px;
+    box-shadow: 0 -2px 0 #222;
+    animation: intro-keys 7s ease;
+  }
+
+  #site-intro .key.space { width: 45px; }
+  #site-intro .key.f { height: 3px; }
+
+  #site-intro .macbody .pad {
+    width: 5px;
+    height: 5px;
+    background: #333;
+    border-radius: 100%;
+    position: absolute;
+  }
+
+  #site-intro .pad.one { left: 20px; top: 20px; }
+  #site-intro .pad.two { right: 20px; top: 20px; }
+  #site-intro .pad.three { right: 20px; bottom: 20px; }
+  #site-intro .pad.four { left: 20px; bottom: 20px; }
+
+  @keyframes intro-rotate {
+    0% { transform: rotateX(-20deg) rotateY(0deg) rotateZ(0deg); }
+    5% { transform: rotateX(-20deg) rotateY(-20deg) rotateZ(0deg); }
+    20% { transform: rotateX(30deg) rotateY(200deg) rotateZ(0deg); }
+    25% { transform: rotateX(-60deg) rotateY(150deg) rotateZ(0deg); }
+    60% { transform: rotateX(-20deg) rotateY(130deg) rotateZ(0deg); }
+    65% { transform: rotateX(-20deg) rotateY(120deg) rotateZ(0deg); }
+    80% { transform: rotateX(-20deg) rotateY(375deg) rotateZ(0deg); }
+    85% { transform: rotateX(-20deg) rotateY(357deg) rotateZ(0deg); }
+    87% { transform: rotateX(-20deg) rotateY(360deg) rotateZ(0deg); }
+    100% { transform: rotateX(-20deg) rotateY(360deg) rotateZ(0deg); }
+  }
+
+  @keyframes intro-lid-screen {
+    0% { transform: rotateX(0deg); background-position: left bottom; }
+    5% { transform: rotateX(50deg); background-position: left bottom; }
+    20% { transform: rotateX(-90deg); background-position: -150px top; }
+    25% { transform: rotateX(15deg); background-position: left bottom; }
+    30% { transform: rotateX(-5deg); background-position: right top; }
+    38% { transform: rotateX(5deg); background-position: right top; }
+    48% { transform: rotateX(0deg); background-position: right top; }
+    90% { transform: rotateX(0deg); background-position: right top; }
+    100% { transform: rotateX(0deg); background-position: right center; }
+  }
+
+  @keyframes intro-lid-macbody {
+    0%, 100% { transform: rotateX(-90deg); }
+    50% { transform: rotateX(-90deg); }
+  }
+
+  @keyframes intro-keyboard-area {
+    0%, 100% { background-color: #dfdfdf; }
+    50% { background-color: #bbb; }
+  }
+
+  @keyframes intro-screen-shade {
+    0% { background-position: -20px 0; }
+    5% { background-position: -40px 0; }
+    20% { background-position: 200px 0; }
+    50% { background-position: -200px 0; }
+    80% { background-position: 0 0; }
+    85% { background-position: -30px 0; }
+    90%, 100% { background-position: -20px 0; }
+  }
+
+  @keyframes intro-keys {
+    0%, 5% { box-shadow: 0 -2px 0 #222; }
+    20%, 60% { box-shadow: -1px 1px 0 #222; }
+    80%, 100% { box-shadow: 0 -2px 0 #222; }
+  }
+
+  @keyframes intro-shadow {
+    0%, 5% {
+      transform: rotateX(80deg) rotateY(0deg) rotateZ(0deg);
+      box-shadow: 0 0 60px 40px rgba(0,0,0,.3);
+    }
+    20% {
+      transform: rotateX(30deg) rotateY(-20deg) rotateZ(-20deg);
+      box-shadow: 0 0 50px 30px rgba(0,0,0,.3);
+    }
+    25% {
+      transform: rotateX(80deg) rotateY(-20deg) rotateZ(50deg);
+      box-shadow: 0 0 35px 15px rgba(0,0,0,.1);
+    }
+    60% {
+      transform: rotateX(80deg) rotateY(0deg) rotateZ(-50deg) translateX(30px);
+      box-shadow: 0 0 60px 40px rgba(0,0,0,.3);
+    }
+    100% { box-shadow: 0 0 60px 40px rgba(0,0,0,.3); }
+  }
+
+  @keyframes intro-brand-in {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes intro-text-in {
+    to { opacity: 1; }
+  }
+
+  @keyframes intro-dot {
+    0%, 80%, 100% { transform: translateY(0); opacity: .35; }
+    40% { transform: translateY(-4px); opacity: 1; }
+  }
+
+  @media (max-width: 600px) {
+    #site-intro .intro-brand { top: 12%; }
+    #site-intro .macbook { transform: scale(1.55); }
+    #site-intro .intro-text { bottom: 13%; font-size: 9px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #site-intro .inner,
+    #site-intro .screen,
+    #site-intro .macbody,
+    #site-intro .keyboard .key,
+    #site-intro .shade,
+    #site-intro .shadow {
+      animation: none !important;
+    }
+  }
+</style>
+
+</head>
+
+<body>
+  <!-- TELA DE ENTRADA / INTRO -->
+  <div id="site-intro" aria-hidden="true">
+    <div class="intro-content">
+      <div class="intro-brand">Node<span>Bots</span></div>
+
+      <div class="macbook intro-macbook">
+        <div class="inner">
+          <div class="screen">
+            <div class="face-one">
+              <div class="camera"></div>
+              <div class="display">
+                <div class="shade"></div>
+              </div>
+              <span>NodeBots</span>
+            </div>
+          </div>
+
+          <div class="macbody">
+            <div class="face-one">
+              <div class="touchpad"></div>
+              <div class="keyboard">
+                <div class="key"></div><div class="key"></div><div class="key"></div>
+                <div class="key"></div><div class="key"></div><div class="key space"></div>
+                <div class="key"></div><div class="key"></div><div class="key"></div>
+                <div class="key"></div><div class="key"></div><div class="key"></div>
+                <div class="key"></div><div class="key"></div><div class="key"></div>
+                <div class="key"></div><div class="key"></div><div class="key"></div>
+                <div class="key"></div><div class="key"></div><div class="key"></div>
+                <div class="key"></div><div class="key"></div><div class="key"></div>
+                <div class="key"></div><div class="key"></div><div class="key"></div>
+                <div class="key"></div><div class="key"></div><div class="key"></div>
+                <div class="key"></div><div class="key"></div><div class="key"></div>
+                <div class="key"></div><div class="key"></div><div class="key"></div>
+                <div class="key"></div><div class="key"></div><div class="key"></div>
+                <div class="key"></div><div class="key"></div><div class="key"></div>
+                <div class="key"></div><div class="key"></div><div class="key"></div>
+                <div class="key"></div><div class="key"></div><div class="key"></div>
+                <div class="key"></div><div class="key"></div><div class="key"></div>
+                <div class="key"></div><div class="key"></div><div class="key"></div>
+                <div class="key"></div><div class="key"></div><div class="key"></div>
+                <div class="key f"></div><div class="key f"></div><div class="key f"></div>
+                <div class="key f"></div><div class="key f"></div><div class="key f"></div>
+                <div class="key f"></div><div class="key f"></div><div class="key f"></div>
+                <div class="key f"></div><div class="key f"></div><div class="key f"></div>
+                <div class="key f"></div><div class="key f"></div><div class="key f"></div>
+                <div class="key f"></div>
+              </div>
+            </div>
+            <div class="pad one"></div>
+            <div class="pad two"></div>
+            <div class="pad three"></div>
+            <div class="pad four"></div>
+          </div>
+        </div>
+        <div class="shadow"></div>
+      </div>
+
+      <div class="intro-loading">
+        <span></span><span></span><span></span>
+      </div>
+      <div class="intro-text">CARREGANDO...</div>
+    </div>
+  </div>
+
+
+  <canvas id="bg-canvas"></canvas>
+
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <span class="brand">Node<span class="brand-accent">Bots</span></span>
+      <nav class="nav">
+        <a href="#planos">Planos</a>
+        <a href="/termos.html">Termos</a>
+        <a href="#suporte">Suporte</a>
+
+        <a id="login-nav-btn" href="login.html" class="nav-cta">Fazer login</a>
+
+        <div id="perfil-box">
+          <img id="perfil-foto" src="" alt="Foto de perfil">
+          <span id="perfil-nome"></span>
+          <div id="perfil-dropdown">
+            <a href="perfil.html">Meu perfil</a>
+            <button onclick="fazerLogout()">Sair</button>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+
+    <section class="hero wrap">
+      <p class="kicker"></p>
+      <h1>Um bot que faz exatamente<br>o que o seu servidor precisa.</h1>
+      <p class="hero-sub">
+        Montamos o bot do zero com você: da moderação básica até um painel
+        completo de comandos, economia e integrações. Você escolhe o quanto
+        quer pronto — a gente cuida do resto.
+      </p>
+      <div class="hero-actions">
+
+        <!-- BOTÃO VER PLANOS -->
+        <a href="#planos" class="play-button">
+          <span>P L A N O S</span>
+
+          <div class="clip">
+            <div class="corner leftTop"></div>
+            <div class="corner rightBottom"></div>
+            <div class="corner rightTop"></div>
+            <div class="corner leftBottom"></div>
+          </div>
+
+          <span class="arrow rightArrow"></span>
+          <span class="arrow leftArrow"></span>
+        </a>
+        <br>
+
+        <!-- BOTÃO DISCORD -->
+<a href="https://discord.gg/dw9ujwtfNT" class="discord-button" aria-label="Conversar no Discord" target="_blank" rel="noopener noreferrer">
+  <svg class="discord-svgIcon" viewBox="0 0 384 512">
+    <path d="M214.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 141.2V448c0 17.7 14.3 32 32 32s32-14.3 32-32V141.2L329.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160z"></path>
+  </svg>
+</a>
+
+      </div>
+
+
+
+      <div class="hero-stats">
+        <div class="stat">
+          <span class="stat-num">100%</span>
+          <span class="stat-label">código exclusivo, sem template genérico</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num">24/7</span>
+          <span class="stat-label">suporte pelo nosso servidor no Discord</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num">+200 🤖</span>
+          <span class="stat-label">bots criados</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="planos" class="plans wrap">
+      <p class="section-sub">Os dois formatos incluem código-fonte comentado e suporte para colocar o bot no ar.</p>
+
+      <div class="plan-grid">
+
+        <article class="plan-card">
+          <div class="plan-bar">
+            <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+            <span class="plan-bar-title">bot</span>
+          </div>
+          <div class="plan-body">
+            <h3>Bot</h3>
+            <p class="plan-desc">
+              Bot para discord com comandos de moderação, logs, tickets e embeds personalizados. A base já vem
+              estruturada --
+              você decide o restante dos comandos e funções junto com a gente, no seu ritmo do seu geito.
+            </p>
+            <BR>
+            POR APENAS 50$ REAIS
+            </BR>
+            <ul class="plan-list">
+              <li>Sistema de moderação e logs</li>
+              <li>Sistema de tickets completo</li>
+              <li>Pacote de 7 logos inclusa</li>
+              <li>Sistema de embeds personalizados</li>
+              <li>Bem vindos ao servidor</li>
+              <li>Suporte e moderaçao dentro do seu discord</li>
+              <li>Bot 24/h em call</li>
+              <li>Leitura de mensagens no perfil do bot</li>
+              <li>Configuração personalizada</li>
+              <li>Nosso suporte 24/h por dia</li>
+              <li>Sistema anti-spam anti-flood anti-raid anti-links</li>
+            </ul>
+            <button type="button" class="btn btn-primary btn-block btn-quero" data-bot="Bot">Quero esse <br>50$
+              REAIS</button>
+          </div>
+        </article>
+
+        <article class="plan-card">
+          <div class="plan-bar">
+            <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+            <span class="plan-bar-title">Discord + Bot</span>
+          </div>
+          <div class="plan-body">
+            <h3>Discord + Bot</h3>
+            <p class="plan-desc">
+              Montamos o seu servidor do Discord e o bot com comandos de moderação, logs, tickets e embeds
+              personalizados. A base já vem estruturada
+              e você decide o restante dos comandos e funções junto com a gente, no seu ritmo do seu geito.
+            </p>
+            <BR>
+            POR APENAS 80$ REAIS
+            </BR>
+            <ul class="plan-list">
+              <li>Criação completa do servidor Discord do zero</li>
+              <li>Organização de canais e categorias personalizada</li>
+              <li>Configuração completa de cargos e permissões</li>
+              <li>Bot personalizado para o seu servidor</li>
+              <li>Sistema de tickets completo</li>
+              <li>Sistema de moderação e logs</li>
+              <li>Sistema de boas-vindas e despedidas</li>
+              <li>Embeds personalizados para o servidor</li>
+              <li>Sistema de cargos e autorizações</li>
+              <li>Proteção e segurança do servidor</li>
+              <li>Configuração de comandos personalizados</li>
+              <li>Identidade visual personalizada para o servidor</li>
+              <li>Criação de até 7 logos para o projeto</li>
+              <li>Configuração completa do servidor conforme sua preferência</li>
+              <li>Suporte para ajustes e configurações</li>
+              <li>Bot 24/h em call</li>
+              <li>Sistema anti-spam anti-flood anti-raid anti-links</li>
+            </ul>
+            <button type="button" class="btn btn-primary btn-block btn-quero" data-bot="Discord + Bot">Quero esse
+              <br>80$ REAIS</button>
+          </div>
+        </article>
+
+        <article class="plan-card">
+          <div class="plan-bar">
+            <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+            <span class="plan-bar-title">KIT BOB ESPONJA</span>
+          </div>
+          <div class="plan-body">
+            <h3>KIT BOB ESPONJA</h3>
+            <p class="plan-desc">
+              O Kit Bob Esponja é um pacote completo que inclui a criação de sites, bots e servidores do Discord. Com ele, vocé terá acesso a uma equipe especializada que irá desenvolver soluções personalizadas para atender ás suas necessidades. Além disso, o Kit Bob Esponja oferece suporte técnico e manutenção contínua para garantir que seus projetos estejam sempre atualizados e funcionando corretamente.
+            </p>
+            <BR>
+            POR APENAS 180$ REAIS
+            </BR>
+            <ul class="plan-list">
+              <li>Criação completa do servidor Discord do zero</li>
+              <li>Organização de canais e categorias personalizada</li>
+              <li>Configuração completa de cargos e permissões</li>
+              <li>Bot personalizado para o seu servidor</li>
+              <li>Sistema de tickets completo</li>
+              <li>Sistema de moderação e logs</li>
+              <li>Sistema de boas-vindas e despedidas</li>
+              <li>Embeds personalizados para o servidor</li>
+              <li>Sistema de cargos e autorizações</li>
+              <li>Proteção e segurança do servidor</li>
+              <li>Configuração de comandos personalizados</li>
+              <li>Identidade visual personalizada para o servidor</li>
+              <li>Criação de até 7 logos para o projeto</li>
+              <li>Configuração completa do servidor conforme sua preferência</li>
+              <li>Bot 24 horas online</li>
+              <li>Sistema anti-spam, anti-flood, anti-raid e anti-links</li>
+              <li>Criação de site profissional personalizado</li>
+              <li>Design exclusivo de acordo com a identidade do projeto</li>
+              <li>Site responsivo para computador, tablet e celular</li>
+              <li>Página inicial personalizada</li>
+              <li>Seção de apresentação do projeto ou servidor</li>
+              <li>Seção de serviços, produtos ou informações</li>
+              <li>Botões funcionais</li>
+              <li>Integração com WhatsApp e redes sociais</li>
+              <li>Galeria de imagens e projetos</li>
+              <li>Área de contato personalizada</li>
+              <li>Links personalizados para o servidor Discord</li>
+              <li>SEO básico para melhorar a presença do site nos buscadores</li>
+              <li>Otimização de velocidade e desempenho</li>
+              <li>Configuração de domínio e hospedagem</li>
+              <li>Certificado de segurança HTTPS</li>
+              <li>Site desenvolvido conforme a preferência do cliente</li>
+              <li>Suporte para ajustes e atualizações</li>
+            </ul>
+            <button type="button" class="btn btn-primary btn-block btn-quero" data-bot="KIT BOB ESPONJA">Quero esse <br>180$
+              REAIS</button>
+          </div>
+        </article>
+
+
+      </div>
+    </section>
+
+    <section id="suporte" class="support wrap">
+      <div class="support-text">
+        <h2>Suporte direto no Discord e no proprio chat no site</h2>
+        <p>
+          Nosso suporte e atendimento é feito tanto no nosso
+          site quanto no nosso servidor do Discord. vocé pode
+          entrar em contato com a nossa equipe de suporte para tirar dúvidas,
+          relatar problemas ou solicitar ajuda com o seu bot.
+        </p>
+        <ul class="support-points">
+          <li>Atendimento pelos canais do nosso servidor ou no site onde vocé se sentir mais seguro</li>
+          <li>instalação e configuracao do bot feita por nossa equipe</li>
+          <li>Correções incluídas após a entrega a qualque momento</li>
+          <li>Pagamento seguro e flexível</li>
+          <li>Pagamento para deixar o bot online por mês e responsabilidade do propietario do bot</li>
+        </ul>
+      </div>
+      <div class="support-panel">
+        <div class="plan-bar">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span class="plan-bar-title">#suporte</span>
+        </div>
+        <div class="support-panel-body">
+          <p class="support-line"><span class="support-user">voce</span> meu bot não está respondendo os comandos</p>
+          <p class="support-line"><span class="support-user support-user-team">equipe</span> pode mandar o print do
+            erro? já te ajudo a resolver</p>
+          <p class="support-line support-line-fade">digitando…</p>
+        </div>
+      </div>
+    </section>
+
+<section id="contato" class="cta wrap">
+  <h2>Vamos montar o seu servidor do Discord e o bot?</h2>
+
+  <p>Entre no nosso Discord e conte pra gente o que você precisa.</p>
+
+  <a
+    href="https://discord.gg/dw9ujwtfNT"
+    id="btn-discord"
+    class="btn btn-primary btn-large"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    Entrar no servidor de suporte
+  </a>
+</section>
+
+  </main>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="firebase-config.js"></script>
+  <script src="auth.js"></script>
+  <script src="script.js"></script>
+  <script src="termos-consentimento.js"></script>
+  <script>
+    function exigirTermos(callback) {
+      if (typeof termosAceitos !== "undefined" && termosAceitos === true) {
+        callback();
+        return;
+      }
+      if (typeof window.aguardarTermosAceitos === "function") {
+        window.aguardarTermosAceitos().then(() => callback());
+      }
+    }
+
+    document.querySelectorAll(".btn-quero").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const bot = btn.dataset.bot;
+        await window.aguardarTermosAceitos();
+        const user = await authReady;
+        if (user) {
+          window.location.href = "chat.html?bot=" + encodeURIComponent(bot);
+        } else {
+          window.location.href = "login.html?redirect=chat&bot=" + encodeURIComponent(bot);
+        }
+      });
+    });
+
+    document.querySelectorAll('[data-protected-action="discord"]').forEach((link) => {
+      link.addEventListener("click", async (event) => {
+        event.preventDefault();
+        await window.aguardarTermosAceitos();
+        // Coloque aqui o convite real do Discord quando quiser.
+        const convite = link.dataset.discordUrl;
+        if (convite) window.open(convite, "_blank", "noopener");
+        else alert("Termos aceitos. Agora você pode entrar no nosso Discord.");
+      });
+    });
+  </script>
+
+<script>
+  // Tela de entrada: o site fica por baixo e a intro some após a animação.
+  (function () {
+    const intro = document.getElementById("site-intro");
+    if (!intro) return;
+
+    const hideIntro = () => {
+      intro.classList.add("intro-hide");
+      setTimeout(() => {
+        intro.remove();
+      }, 850);
+    };
+
+    // A animação original dura 7 segundos.
+    // Mantemos a tela até a animação terminar e depois fazemos o fade-out.
+    window.addEventListener("load", () => {
+      setTimeout(hideIntro, 7200);
+    });
+
+    // Evita deixar a página presa caso algum recurso externo demore.
+    setTimeout(hideIntro, 10000);
+  })();
+</script>
+
+</body>
+
+</html>

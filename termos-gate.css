@@ -1,0 +1,84 @@
+/* Bloqueio global até o aceite dos termos */
+html.termos-bloqueado body > *:not(#modal-termos) {
+  visibility: hidden !important;
+  pointer-events: none !important;
+  user-select: none !important;
+}
+
+#modal-termos {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+}
+
+.termos-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(0, 0, 0, .88);
+  backdrop-filter: blur(8px);
+}
+
+.termos-modal {
+  width: min(620px, 100%);
+  max-height: min(90vh, 760px);
+  overflow: auto;
+  padding: 30px;
+  border: 1px solid #25384a;
+  border-radius: 18px;
+  background: #0b1016;
+  color: #f5f7fa;
+  box-shadow: 0 24px 80px rgba(0,0,0,.65);
+}
+
+.termos-icone { font-size: 28px; margin-bottom: 8px; }
+.termos-modal h2 { margin: 0 0 12px; }
+.termos-modal p { color: #b9c2cc; }
+
+.termos-link {
+  display: inline-block;
+  margin: 8px 0 18px;
+  color: #69c7ff;
+  font-weight: 700;
+}
+
+.termos-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: #f5f7fa;
+  cursor: pointer;
+  line-height: 1.45;
+}
+
+.termos-checkbox input {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  margin-top: 2px;
+  accent-color: #69c7ff;
+}
+
+.btn-aceitar-termos {
+  width: 100%;
+  margin-top: 20px;
+  padding: 13px 18px;
+  border: 0;
+  border-radius: 10px;
+  background: #69c7ff;
+  color: #041019;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.btn-aceitar-termos:hover { background: #8bd5ff; }
+.btn-aceitar-termos:disabled { opacity: .65; cursor: wait; }
+.erro-termos { color: #ff7777 !important; min-height: 20px; font-size: .9rem; }
+
+@media (max-width: 600px) {
+  .termos-modal { padding: 22px; }
+  .termos-overlay { padding: 14px; }
+}

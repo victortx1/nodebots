@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel Admin — NodeBots</title>
+<link rel="icon" type="image/png" href="fotos/favicon.png">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+<canvas id="bg-canvas"></canvas>
+
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <a href="index.html"><span class="brand">Node<span class="brand-accent">Bots</span></span></a>
+    <nav class="nav">
+      <a href="index.html">Início</a>
+      <a href="chat.html">Chat</a>
+      <button class="nav-chat-btn" id="btn-sair">Sair</button>
+    </nav>
+  </div>
+</header>
+
+<main class="admin-page wrap">
+  <section id="acesso-negado" class="admin-card" hidden>
+    <h1>Acesso negado</h1>
+    <p>Esta área é exclusiva para administradores autorizados.</p>
+    <a class="btn btn-primary" href="index.html">Voltar ao site</a>
+  </section>
+
+  <section id="painel" hidden>
+    <div class="admin-title">
+      <div>
+        <small>NODEBOTS / ADMIN</small>
+        <h1>Painel de atendimento</h1>
+        <p>Visualize todas as conversas e marque qual atendimento você está assumindo.</p>
+      </div>
+      <span class="admin-online">ADMIN AUTORIZADO</span>
+    </div>
+
+    <div class="admin-shell">
+      <aside class="admin-list">
+        <div class="admin-list-head">
+          <strong>Conversas</strong>
+          <span id="contador">0</span>
+        </div>
+        <div id="lista-conversas" class="conversation-list">
+          <div class="empty">Carregando…</div>
+        </div>
+      </aside>
+
+      <section class="admin-chat">
+        <div class="admin-chat-head">
+          <div>
+            <small id="cliente-email">SELECIONE UMA CONVERSA</small>
+            <h2 id="cliente-nome">Nenhuma conversa selecionada</h2>
+            <span id="bot-nome"></span>
+          </div>
+          <div class="atendimento-box">
+            <span id="atendimento-status">Não assumida</span>
+            <button id="btn-atender" class="btn btn-primary" disabled>Assumir atendimento</button>
+            <button id="btn-liberar" class="btn btn-secondary" disabled>Liberar</button>
+          </div>
+        </div>
+
+        <div id="mensagens" class="messages">
+          <div class="empty">Selecione uma conversa para visualizar as mensagens.</div>
+        </div>
+
+        <form id="form-mensagem" class="message-form">
+          <input id="input-mensagem" type="text" maxlength="2000" autocomplete="off"
+                 placeholder="Digite a resposta para o cliente…" disabled required>
+          <button class="btn btn-primary" type="submit" disabled>Enviar</button>
+        </form>
+      </section>
+    </div>
+  </section>
+</main>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="auth.js"></script>
+<script src="script.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>

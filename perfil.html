@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meu Perfil — NodeBots</title>
+<link rel="icon" type="image/png" href="fotos/favicon.png">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="auth.css">
+<link rel="stylesheet" href="termos-gate.css">
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <a href="index.html"><span class="brand">Node<span class="brand-accent">Bots</span></span></a>
+    <nav class="nav">
+      <a href="index.html">Início</a>
+      <a href="index.html#planos">Planos</a>
+
+      <a id="login-nav-btn" href="login.html" class="nav-cta" style="display:none;">Fazer login</a>
+
+      <div id="perfil-box">
+        <img id="perfil-foto" src="" alt="Foto de perfil">
+        <span id="perfil-nome"></span>
+        <div id="perfil-dropdown">
+          <a href="perfil.html">Meu perfil</a>
+          <button onclick="fazerLogout()">Sair</button>
+        </div>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main class="perfil-main">
+
+  <div id="carregando" style="text-align:center; padding: 60px 0; color: var(--text-muted);">
+    Carregando perfil…
+  </div>
+
+  <div id="conteudo-perfil" style="display:none;">
+    <div class="perfil-header">
+      <img id="pf-foto" src="" alt="Foto de perfil">
+      <div>
+        <h2 id="pf-nome"></h2>
+        <p id="pf-email"></p>
+      </div>
+    </div>
+
+    <div class="perfil-info">
+      <div class="perfil-info-linha">
+        <span>Conta criada em</span>
+        <span id="pf-criado-em">—</span>
+      </div>
+      <div class="perfil-info-linha">
+        <span>Último login</span>
+        <span id="pf-ultimo-login">—</span>
+      </div>
+      <div class="perfil-info-linha">
+        <span>Método de login</span>
+        <span id="pf-metodo">—</span>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="auth.js"></script>
+<script src="script.js"></script>
+<script src="termos-consentimento.js"></script>
+<script>
+  authReady.then((user) => {
+    if (!user) {
+      window.location.href = "login.html";
+      return;
+    }
+
+    document.getElementById("carregando").style.display = "none";
+    document.getElementById("conteudo-perfil").style.display = "block";
+
+    const fotoPadrao = "https://api.dicebear.com/7.x/initials/svg?seed=" + encodeURIComponent(user.displayName || user.email);
+
+    document.getElementById("pf-foto").src = user.photoURL || fotoPadrao;
+    document.getElementById("pf-nome").textContent = user.displayName || "Usuário";
+    document.getElementById("pf-email").textContent = user.email;
+
+    const criadoEm = user.metadata.creationTime ? new Date(user.metadata.creationTime).toLocaleDateString("pt-BR") : "—";
+    const ultimoLogin = user.metadata.lastSignInTime ? new Date(user.metadata.lastSignInTime).toLocaleString("pt-BR") : "—";
+    const metodo = user.providerData[0]?.providerId === "google.com" ? "Google" : "E-mail e senha";
+
+    document.getElementById("pf-criado-em").textContent = criadoEm;
+    document.getElementById("pf-ultimo-login").textContent = ultimoLogin;
+    document.getElementById("pf-metodo").textContent = metodo;
+  });
+</script>
+</body>
+</html>
